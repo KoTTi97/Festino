@@ -2,6 +2,17 @@
 A simple echo bot for the Microsoft Bot Framework. 
 -----------------------------------------------------------------------------*/
 
+var teamsKB = {
+    knowledgeBaseId: "4d5edd0f-13c6-4af9-ab9c-d5167858a492",
+    authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9", // Backward compatibility with QnAMaker (Preview)
+    endpointHostName: "https://festinoqna.azurewebsites.net/qnamaker"
+};
+var sharePointKB = {
+    knowledgeBaseId: "e612834d-f8a4-498a-80d0-373f48f60264",
+    authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9", // Backward compatibility with QnAMaker (Preview)
+    endpointHostName: "https://festinoqna.azurewebsites.net/qnamaker"
+};
+
 var restify = require('restify');
 var builder = require('botbuilder');
 var botbuilder_azure = require("botbuilder-azure");
@@ -47,8 +58,7 @@ var basicQnAMakerPreviewDialog = new builder_cognitiveservices.QnAMakerDialog({
     recognizers: [previewRecognizer],
     defaultMessage: 'No match! Try changing the query terms!',
     qnaThreshold: 0.3
-}
-);
+});
 
 bot.dialog('basicQnAMakerPreviewDialog', basicQnAMakerPreviewDialog);
 
@@ -63,8 +73,7 @@ var basicQnAMakerDialog = new builder_cognitiveservices.QnAMakerDialog({
     recognizers: [recognizer],
     defaultMessage: 'No match! Try changing the query terms!',
     qnaThreshold: 0.3
-}
-);
+});
 
 bot.dialog('basicQnAMakerDialog', basicQnAMakerDialog);
 
