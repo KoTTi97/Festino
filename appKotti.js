@@ -18,9 +18,12 @@ var connector = new builder.ChatConnector({
     openIdMetadata: process.env.BotOpenIdMetadata
 });
 
-server.post('/api/messages', connector.listen());
-
 var bot = new builder.UniversalBot(connector);
+
+var qnaMakerTools = new builder_cognitiveservices.QnAMakerTools();
+bot.library(qnaMakerTools.createLibrary());
+
+server.post('/api/messages', connector.listen());
 
 bot.on("conversationUpdate", (message) =>
 {
@@ -35,25 +38,29 @@ bot.on("conversationUpdate", (message) =>
 var teamsRecognizer = new builder_cognitiveservices.QnAMakerRecognizer({
     knowledgeBaseId: knowledgeBaseIDs.teams,
     authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9",
-    endpointHostName: "https://festinoqna.azurewebsites.net/qnamaker"
+    endpointHostName: "https://festinoqna.azurewebsites.net/qnamaker",
+    top: 3
 });
 
 var teamsBasicQnAMakerDialog = new builder_cognitiveservices.QnAMakerDialog({
     recognizers: [teamsRecognizer],
     defaultMessage: 'No match! Try changing the query terms!',
-    qnaThreshold: 0.3
+    qnaThreshold: 0.7,
+    feedbackLib: qnaMakerTools
 });
 
 var sharePointRecognizer = new builder_cognitiveservices.QnAMakerRecognizer({
     knowledgeBaseId: knowledgeBaseIDs.sharePoint,
     authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9",
-    endpointHostName: "https://festinoqna.azurewebsites.net/qnamaker"
+    endpointHostName: "https://festinoqna.azurewebsites.net/qnamaker",
+    top: 3
 });
 
 var sharePointBasicQnAMakerDialog = new builder_cognitiveservices.QnAMakerDialog({
     recognizers: [sharePointRecognizer],
     defaultMessage: 'No match! Try changing the query terms!',
-    qnaThreshold: 0.3
+    qnaThreshold: 0.7,
+    feedbackLib: qnaMakerTools
 });
 
 bot.dialog('sharePointBasicQnAMakerDialog', sharePointBasicQnAMakerDialog);
@@ -64,8 +71,6 @@ bot.dialog("/", [(session) =>
     builder.Prompts.choice(session, "Mit welcher Plattform kann ich dir helfen?", ["SharePoint", "Teams"]);
 }, (session, results) =>
 {
-    console.log("\n--------------\n" + results.response.entity);
-
     if(results.response.entity === "SharePoint")
     {
         session.beginDialog("SharePointMain");
