@@ -94,8 +94,6 @@ bot.dialog("TeamsMain", [(session) =>
 
 
 
-
-
 /*var basicQnAMakerPreviewDialog = new builder_cognitiveservices.QnAMakerDialog({
     recognizers: [previewRecognizer],
     defaultMessage: 'No match! Try changing the query terms!',
