@@ -47,12 +47,25 @@ var tableStorage = new botbuilder_azure.AzureBotStorage({ gzipData: false }, azu
 // Create your bot with a function to receive messages from the user
 var bot = new builder.UniversalBot(connector);
 //bot.set('storage', tableStorage);
+bot.on('conversationUpdate', function (message) {
+    if (message.membersAdded) {
+        message.membersAdded.forEach(function (identity) {
+            if (identity.id === message.address.bot.id) {
+                bot.send(new builder.Message()
+                    .address(message.address)
+                    .text("Hello!  I'm Festino how can i help you?"));
+            }
+        });
+    }
+});
 
 // Recognizer and and Dialog for preview QnAMaker service
 var previewRecognizer = new builder_cognitiveservices.QnAMakerRecognizer({
     knowledgeBaseId: "4d5edd0f-13c6-4af9-ab9c-d5167858a492",
     authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9"
 });
+
+
 
 var basicQnAMakerPreviewDialog = new builder_cognitiveservices.QnAMakerDialog({
     recognizers: [previewRecognizer],
