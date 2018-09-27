@@ -1,17 +1,11 @@
-var teamsKB = {
-    knowledgeBaseId: "4d5edd0f-13c6-4af9-ab9c-d5167858a492",
-    authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9",
-    endpointHostName: "https://festinoqna.azurewebsites.net/qnamaker"
-};
-var sharePointKB = {
-    knowledgeBaseId: "e612834d-f8a4-498a-80d0-373f48f60264",
-    authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9",
-    endpointHostName: "https://festinoqna.azurewebsites.net/qnamaker"
-};
-
 var restify = require('restify');
 var builder = require('botbuilder');
 var builder_cognitiveservices = require("botbuilder-cognitiveservices");
+
+var knowledgeBaseIDs = {
+    sharePoint: "e612834d-f8a4-498a-80d0-373f48f60264",
+    teams: "4d5edd0f-13c6-4af9-ab9c-d5167858a492"
+};
 
 var server = restify.createServer();
 server.listen(3978, function () {
@@ -38,27 +32,69 @@ bot.on("conversationUpdate", (message) =>
     }
 });
 
+var teamsRecognizer = new builder_cognitiveservices.QnAMakerRecognizer({
+    knowledgeBaseId: knowledgeBaseIDs.teams,
+    authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9",
+    endpointHostName: "https://festinoqna.azurewebsites.net/qnamaker"
+});
+
+var teamsBasicQnAMakerDialog = new builder_cognitiveservices.QnAMakerDialog({
+    recognizers: [teamsRecognizer],
+    defaultMessage: 'No match! Try changing the query terms!',
+    qnaThreshold: 0.3
+});
+
+var sharePointRecognizer = new builder_cognitiveservices.QnAMakerRecognizer({
+    knowledgeBaseId: knowledgeBaseIDs.sharePoint,
+    authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9",
+    endpointHostName: "https://festinoqna.azurewebsites.net/qnamaker"
+});
+
+var sharePointBasicQnAMakerDialog = new builder_cognitiveservices.QnAMakerDialog({
+    recognizers: [sharePointRecognizer],
+    defaultMessage: 'No match! Try changing the query terms!',
+    qnaThreshold: 0.3
+});
+
+bot.dialog('sharePointBasicQnAMakerDialog', sharePointBasicQnAMakerDialog);
+bot.dialog('teamsBasicQnAMakerDialog', teamsBasicQnAMakerDialog);
 
 bot.dialog("/", [(session) =>
 {
     builder.Prompts.choice(session, "Mit welcher Plattform kann ich dir helfen?", ["SharePoint", "Teams"]);
 }, (session, results) =>
 {
+    console.log("\n--------------\n" + results.response.entity);
+
     if(results.response.entity === "SharePoint")
     {
-        session.beginDialog("SharePoint");
+        session.beginDialog("SharePointMain");
+    }
+    else if(results.response.entity === "Teams")
+    {
+        session.beginDialog("TeamsMain");
     }
 }]);
 
-bot.dialog("SharePoint", [(session) =>
+bot.dialog("SharePointMain", [(session) =>
 {
-    session.send("This is the SharePoint Dialog");
+    builder.Prompts.text(session, "What do you want to know about SharePoint?");
+}, (session, results) =>
+{
+    session.replaceDialog('sharePointBasicQnAMakerDialog');
 }]);
 
-/*var previewRecognizer = new builder_cognitiveservices.QnAMakerRecognizer({
-    knowledgeBaseId: "4d5edd0f-13c6-4af9-ab9c-d5167858a492",
-    authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9"
-});*/
+bot.dialog("TeamsMain", [(session) =>
+{
+    builder.Prompts.text(session, "What do you want to know about Teams?");
+}, (session, results) =>
+{
+    session.replaceDialog('teamsBasicQnAMakerDialog');
+}]);
+
+
+
+
 
 /*var basicQnAMakerPreviewDialog = new builder_cognitiveservices.QnAMakerDialog({
     recognizers: [previewRecognizer],
@@ -67,18 +103,6 @@ bot.dialog("SharePoint", [(session) =>
 });*/
 
 //bot.dialog('basicQnAMakerPreviewDialog', basicQnAMakerPreviewDialog);
-
-/*var recognizer = new builder_cognitiveservices.QnAMakerRecognizer({
-    knowledgeBaseId: "4d5edd0f-13c6-4af9-ab9c-d5167858a492",
-    authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9",
-    endpointHostName: "https://festinoqna.azurewebsites.net/qnamaker"
-});*/
-
-/*var basicQnAMakerDialog = new builder_cognitiveservices.QnAMakerDialog({
-    recognizers: [recognizer],
-    defaultMessage: 'No match! Try changing the query terms!',
-    qnaThreshold: 0.3
-});*/
 
 //bot.dialog('basicQnAMakerDialog', basicQnAMakerDialog);
 

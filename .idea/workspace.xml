@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="498ce099-9961-4abe-ac4b-82dfbe639692" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/appKotti.js" beforeDir="false" afterPath="$PROJECT_DIR$/appKotti.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -23,7 +24,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="gitignore" value="1" />
+          <entry key="gitignore" value="2" />
           <entry key="js" value="4" />
           <entry key="json" value="2" />
           <entry key="txt" value="1" />
@@ -31,7 +32,7 @@
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Git file" value="1" />
+          <entry key="Git file" value="2" />
           <entry key="JSON" value="2" />
           <entry key="JavaScript" value="4" />
           <entry key="PLAIN_TEXT" value="1" />
@@ -40,17 +41,17 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="gitignore" value="4" />
-          <entry key="js" value="384" />
+          <entry key="js" value="1856" />
           <entry key="json" value="55" />
-          <entry key="txt" value="64" />
+          <entry key="txt" value="96" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Git file" value="4" />
           <entry key="JSON" value="55" />
-          <entry key="JavaScript" value="384" />
-          <entry key="PLAIN_TEXT" value="64" />
+          <entry key="JavaScript" value="1856" />
+          <entry key="PLAIN_TEXT" value="96" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.vcs.git.usages">
@@ -104,11 +105,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/appKotti.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="32" column="46" lean-forward="true" selection-start-line="32" selection-start-column="46" selection-end-line="32" selection-end-column="46" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
+            <state relative-caret-position="567">
+              <caret line="90" column="1" lean-forward="true" selection-start-line="90" selection-start-column="1" selection-end-line="90" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -205,6 +203,19 @@
       </list>
     </option>
   </component>
+  <component name="RunManager">
+    <configuration name="appKotti.js" type="MongoRunConfiguration" factoryName="Mongo" temporary="true">
+      <module name="Festino" />
+      <setting name="path" value="$PROJECT_DIR$/appKotti.js" />
+      <setting name="shellParams" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Mongo.appKotti.js" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -217,7 +228,7 @@
       <updated>1537964259929</updated>
       <workItem from="1537964261066" duration="5080000" />
       <workItem from="1537969402604" duration="36000" />
-      <workItem from="1538031899675" duration="1234000" />
+      <workItem from="1538031899675" duration="6764000" />
     </task>
     <task id="LOCAL-00001" summary="gitignore">
       <created>1537965199866</created>
@@ -247,17 +258,31 @@
       <option name="project" value="LOCAL" />
       <updated>1538032702694</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="appKotti.js added">
+      <created>1538033165378</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1538033165378</updated>
+    </task>
+    <task id="LOCAL-00006" summary="dialogs working">
+      <created>1538035247237</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1538035247237</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="6350000" />
+    <option name="totallyTimeSpent" value="11880000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1753" height="954" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.17758112" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.10330579" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
@@ -273,12 +298,12 @@
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="11" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="12" visible="true" weight="0.30074257" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Mongo Explorer" order="3" />
       <window_info anchor="right" id="Database" order="4" />
+      <window_info active="true" anchor="right" id="Terminal" order="5" visible="true" weight="0.37367177" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -292,16 +317,11 @@
     <MESSAGE value="two knowledgebases started" />
     <MESSAGE value="screenshot added" />
     <MESSAGE value="links added" />
-    <option name="LAST_COMMIT_MESSAGE" value="links added" />
+    <MESSAGE value="appKotti.js added" />
+    <MESSAGE value="dialogs working" />
+    <option name="LAST_COMMIT_MESSAGE" value="dialogs working" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="72">
-          <caret line="3" column="5" lean-forward="true" selection-start-line="3" selection-start-column="5" selection-end-line="3" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -333,13 +353,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="63">
+          <caret line="3" column="5" lean-forward="true" selection-start-line="3" selection-start-column="5" selection-end-line="3" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/appKotti.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="32" column="46" lean-forward="true" selection-start-line="32" selection-start-column="46" selection-end-line="32" selection-end-column="46" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
+        <state relative-caret-position="567">
+          <caret line="90" column="1" lean-forward="true" selection-start-line="90" selection-start-column="1" selection-end-line="90" selection-end-column="1" />
         </state>
       </provider>
     </entry>
