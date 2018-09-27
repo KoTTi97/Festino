@@ -1,7 +1,3 @@
-/*-----------------------------------------------------------------------------
-A simple echo bot for the Microsoft Bot Framework.
------------------------------------------------------------------------------*/
-
 var teamsKB = {
     knowledgeBaseId: "4d5edd0f-13c6-4af9-ab9c-d5167858a492",
     authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9",
@@ -32,34 +28,61 @@ server.post('/api/messages', connector.listen());
 
 var bot = new builder.UniversalBot(connector);
 
-var previewRecognizer = new builder_cognitiveservices.QnAMakerRecognizer({
-    knowledgeBaseId: "4d5edd0f-13c6-4af9-ab9c-d5167858a492",
-    authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9"
+bot.on("conversationUpdate", (message) =>
+{
+    if (message.membersAdded[0].id === message.address.bot.id) {
+        var reply = new builder.Message()
+            .address(message.address)
+            .text("Hi, my name is Festino! How can i help you?");
+        bot.send(reply);
+    }
 });
 
-var basicQnAMakerPreviewDialog = new builder_cognitiveservices.QnAMakerDialog({
+
+bot.dialog("/", [(session) =>
+{
+    builder.Prompts.choice(session, "Mit welcher Plattform kann ich dir helfen?", ["SharePoint", "Teams"]);
+}, (session, results) =>
+{
+    if(results.response.entity === "SharePoint")
+    {
+        session.beginDialog("SharePoint");
+    }
+}]);
+
+bot.dialog("SharePoint", [(session) =>
+{
+    session.send("This is the SharePoint Dialog");
+}]);
+
+/*var previewRecognizer = new builder_cognitiveservices.QnAMakerRecognizer({
+    knowledgeBaseId: "4d5edd0f-13c6-4af9-ab9c-d5167858a492",
+    authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9"
+});*/
+
+/*var basicQnAMakerPreviewDialog = new builder_cognitiveservices.QnAMakerDialog({
     recognizers: [previewRecognizer],
     defaultMessage: 'No match! Try changing the query terms!',
     qnaThreshold: 0.3
-});
+});*/
 
-bot.dialog('basicQnAMakerPreviewDialog', basicQnAMakerPreviewDialog);
+//bot.dialog('basicQnAMakerPreviewDialog', basicQnAMakerPreviewDialog);
 
-var recognizer = new builder_cognitiveservices.QnAMakerRecognizer({
+/*var recognizer = new builder_cognitiveservices.QnAMakerRecognizer({
     knowledgeBaseId: "4d5edd0f-13c6-4af9-ab9c-d5167858a492",
     authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9",
     endpointHostName: "https://festinoqna.azurewebsites.net/qnamaker"
-});
+});*/
 
-var basicQnAMakerDialog = new builder_cognitiveservices.QnAMakerDialog({
+/*var basicQnAMakerDialog = new builder_cognitiveservices.QnAMakerDialog({
     recognizers: [recognizer],
     defaultMessage: 'No match! Try changing the query terms!',
     qnaThreshold: 0.3
-});
+});*/
 
-bot.dialog('basicQnAMakerDialog', basicQnAMakerDialog);
+//bot.dialog('basicQnAMakerDialog', basicQnAMakerDialog);
 
-bot.dialog('/',
+/*bot.dialog('/',
     [
         function (session) {
             var qnaKnowledgebaseId = "4d5edd0f-13c6-4af9-ab9c-d5167858a492";
@@ -75,4 +98,4 @@ bot.dialog('/',
                     session.replaceDialog('basicQnAMakerDialog');
             }
         }
-    ]);
+    ]);*/
