@@ -70,8 +70,12 @@ bot.dialog('teamsBasicQnAMakerDialog', teamsBasicQnAMakerDialog);
 
 bot.dialog("/", [(session) =>
 {
-    builder.Prompts.choice(session, firstDialog ? "Hi, my name is Festino! \n" +
-        "Which platform do you need help for?" : "Can I help you with you with something else?", "SharePoint|Teams",
+    if(firstDialog)
+    {
+        session.send("Hi, my name is Festino!");
+    }
+    builder.Prompts.choice(session, firstDialog ? "Which platform do you need help for?" :
+        "Can I help you with you with something else?", "SharePoint|Teams",
         {listStyle: builder.ListStyle.button});
 }, (session, result) =>
 {
@@ -100,7 +104,6 @@ bot.dialog("SharePointMain", [(session) =>
     builder.Prompts.text(session, "What do you want to know about SharePoint?");
 }, (session, results) =>
 {
-    session.send(JSON.stringify(results));
     session.beginDialog('sharePointBasicQnAMakerDialog');
 }, (session, result) =>
 {
@@ -113,5 +116,28 @@ bot.dialog("TeamsMain", [(session) =>
 }, (session, results) =>
 {
     session.beginDialog('teamsBasicQnAMakerDialog');
+}, (session, result) =>
+{
+    session.endDialogWithResult({category: "Teams"})
 }]);
 
+
+
+
+
+bot.dialog("Cancel", [(session) =>
+{
+    session.send("You now leave this context");
+    session.replaceDialog("/");
+}])
+.triggerAction({
+    matches: /^cancel$/i
+});
+
+bot.dialog("Help", [(session) =>
+{
+    session.send("This is the help dialog");
+}])
+.triggerAction({
+    matches: /^help$/i
+});
