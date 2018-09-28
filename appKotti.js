@@ -2,6 +2,8 @@ var restify = require('restify');
 var builder = require('botbuilder');
 var builder_cognitiveservices = require("botbuilder-cognitiveservices");
 
+var firstDialog = true;
+
 var knowledgeBaseIDs = {
     sharePoint: "e612834d-f8a4-498a-80d0-373f48f60264",
     teams: "4d5edd0f-13c6-4af9-ab9c-d5167858a492"
@@ -25,7 +27,7 @@ bot.library(qnaMakerTools.createLibrary());
 
 server.post('/api/messages', connector.listen());
 
-bot.on("conversationUpdate", (message) =>
+/*bot.on("conversationUpdate", (message) =>
 {
     if (message.membersAdded[0].id === message.address.bot.id) {
         var reply = new builder.Message()
@@ -33,7 +35,7 @@ bot.on("conversationUpdate", (message) =>
             .text("Hi, my name is Festino! How can i help you?");
         bot.send(reply);
     }
-});
+});*/
 
 var teamsRecognizer = new builder_cognitiveservices.QnAMakerRecognizer({
     knowledgeBaseId: knowledgeBaseIDs.teams,
@@ -68,17 +70,29 @@ bot.dialog('teamsBasicQnAMakerDialog', teamsBasicQnAMakerDialog);
 
 bot.dialog("/", [(session) =>
 {
-    builder.Prompts.choice(session, "Mit welcher Plattform kann ich dir helfen?", ["SharePoint", "Teams"]);
-}, (session, results) =>
+    builder.Prompts.choice(session, firstDialog ? "Hi, my name is Festino! \n" +
+        "Which platform do you need help for?" : "Can I help you with you with something else?", "SharePoint|Teams",
+        {listStyle: builder.ListStyle.button});
+}, (session, result) =>
 {
-    if(results.response.entity === "SharePoint")
+    session.beginDialog("CategorySelection", {category:result.response.entity});
+}]);
+
+bot.dialog("CategorySelection", [(session, args) =>
+{
+    firstDialog = false;
+
+    if(args.category === "SharePoint")
     {
         session.beginDialog("SharePointMain");
     }
-    else if(results.response.entity === "Teams")
+    else if(args.category === "Teams")
     {
         session.beginDialog("TeamsMain");
     }
+}, (session, result) =>
+{
+    session.replaceDialog("CategorySelection", {category: result.category});
 }]);
 
 bot.dialog("SharePointMain", [(session) =>
@@ -86,7 +100,11 @@ bot.dialog("SharePointMain", [(session) =>
     builder.Prompts.text(session, "What do you want to know about SharePoint?");
 }, (session, results) =>
 {
-    session.replaceDialog('sharePointBasicQnAMakerDialog');
+    session.send(JSON.stringify(results));
+    session.beginDialog('sharePointBasicQnAMakerDialog');
+}, (session, result) =>
+{
+    session.endDialogWithResult({category: "SharePoint"})
 }]);
 
 bot.dialog("TeamsMain", [(session) =>
@@ -94,35 +112,6 @@ bot.dialog("TeamsMain", [(session) =>
     builder.Prompts.text(session, "What do you want to know about Teams?");
 }, (session, results) =>
 {
-    session.replaceDialog('teamsBasicQnAMakerDialog');
+    session.beginDialog('teamsBasicQnAMakerDialog');
 }]);
 
-
-
-/*var basicQnAMakerPreviewDialog = new builder_cognitiveservices.QnAMakerDialog({
-    recognizers: [previewRecognizer],
-    defaultMessage: 'No match! Try changing the query terms!',
-    qnaThreshold: 0.3
-});*/
-
-//bot.dialog('basicQnAMakerPreviewDialog', basicQnAMakerPreviewDialog);
-
-//bot.dialog('basicQnAMakerDialog', basicQnAMakerDialog);
-
-/*bot.dialog('/',
-    [
-        function (session) {
-            var qnaKnowledgebaseId = "4d5edd0f-13c6-4af9-ab9c-d5167858a492";
-            var qnaAuthKey = "d219649a-bd62-44b6-9baf-3df5c9024da9";
-            var endpointHostName = "https://festinoqna.azurewebsites.net/qnamaker";
-
-            if ((qnaAuthKey == null || qnaAuthKey === '') || (qnaKnowledgebaseId == null || qnaKnowledgebaseId === ''))
-                session.send('Please set QnAKnowledgebaseId, QnAAuthKey and QnAEndpointHostName (if applicable) in App Settings. Learn how to get them at https://aka.ms/qnaabssetup.');
-            else {
-                if (endpointHostName == null || endpointHostName === '')
-                    session.replaceDialog('basicQnAMakerPreviewDialog');
-                else
-                    session.replaceDialog('basicQnAMakerDialog');
-            }
-        }
-    ]);*/

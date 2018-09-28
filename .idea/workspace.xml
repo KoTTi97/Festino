@@ -25,7 +25,7 @@
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="gitignore" value="2" />
-          <entry key="js" value="7" />
+          <entry key="js" value="8" />
           <entry key="json" value="3" />
           <entry key="txt" value="2" />
         </counts>
@@ -34,24 +34,24 @@
         <counts>
           <entry key="Git file" value="2" />
           <entry key="JSON" value="3" />
-          <entry key="JavaScript" value="7" />
+          <entry key="JavaScript" value="8" />
           <entry key="PLAIN_TEXT" value="2" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="gitignore" value="4" />
-          <entry key="js" value="2023" />
+          <entry key="js" value="2548" />
           <entry key="json" value="55" />
-          <entry key="txt" value="96" />
+          <entry key="txt" value="103" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Git file" value="4" />
           <entry key="JSON" value="55" />
-          <entry key="JavaScript" value="2023" />
-          <entry key="PLAIN_TEXT" value="96" />
+          <entry key="JavaScript" value="2548" />
+          <entry key="PLAIN_TEXT" value="103" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.vcs.git.usages">
@@ -106,13 +106,22 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/appKotti.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="378">
-              <caret line="23" column="19" lean-forward="true" selection-start-line="23" selection-start-column="19" selection-end-line="23" selection-end-column="19" />
+            <state relative-caret-position="331">
+              <caret line="96" lean-forward="true" selection-start-line="96" selection-end-line="96" />
+              <folding>
+                <element signature="e#1525#1701#0" />
+                <element signature="e#1786#1915#0" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
     </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>.category</find>
+    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="ROOT_SYNC" value="DONT_SYNC" />
@@ -186,6 +195,7 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RecentsManager">
@@ -205,13 +215,20 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Node.js.appKotti">
     <configuration name="appKotti.js" type="MongoRunConfiguration" factoryName="Mongo" temporary="true">
       <module name="Festino" />
       <setting name="path" value="$PROJECT_DIR$/appKotti.js" />
       <setting name="shellParams" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="appKotti" type="NodeJSConfigurationType" factoryName="Node.js" path-to-js-file="appKotti.js" working-dir="$PROJECT_DIR$">
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Node.js.appKotti" />
+      <item itemvalue="Mongo.appKotti.js" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Mongo.appKotti.js" />
@@ -275,11 +292,18 @@
       <option name="project" value="LOCAL" />
       <updated>1538035247237</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="updates">
+      <created>1538049242892</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1538049242892</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="15961000" />
+    <option name="totallyTimeSpent" value="24197000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1753" height="954" extended-state="6" />
@@ -292,7 +316,7 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32920793" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32920793" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39975247" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -306,7 +330,7 @@
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Mongo Explorer" order="3" />
       <window_info anchor="right" id="Database" order="4" />
-      <window_info active="true" anchor="right" id="Terminal" order="5" visible="true" weight="0.37367177" />
+      <window_info anchor="right" id="Terminal" order="5" visible="true" weight="0.28453365" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -322,7 +346,8 @@
     <MESSAGE value="links added" />
     <MESSAGE value="appKotti.js added" />
     <MESSAGE value="dialogs working" />
-    <option name="LAST_COMMIT_MESSAGE" value="dialogs working" />
+    <MESSAGE value="updates" />
+    <option name="LAST_COMMIT_MESSAGE" value="updates" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/.gitignore">
@@ -363,10 +388,21 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/async/lib/async.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="51" selection-start-line="51" selection-end-line="51" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/appKotti.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="23" column="19" lean-forward="true" selection-start-line="23" selection-start-column="19" selection-end-line="23" selection-end-column="19" />
+        <state relative-caret-position="331">
+          <caret line="96" lean-forward="true" selection-start-line="96" selection-end-line="96" />
+          <folding>
+            <element signature="e#1525#1701#0" />
+            <element signature="e#1786#1915#0" />
+          </folding>
         </state>
       </provider>
     </entry>
