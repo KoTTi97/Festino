@@ -2,6 +2,53 @@ var restify = require('restify');
 var builder = require('botbuilder');
 var builder_cognitiveservices = require("botbuilder-cognitiveservices");
 
+var card = {
+    "contentType": "application/vnd.microsoft.card.adaptive",
+    "content": {
+        "type": "AdaptiveCard",
+        "body": [{
+            "type": "Container",
+            "items": [{"type": "TextBlock", "size": "Large", "weight": "Bolder", "text": "Help"}, {
+                "type": "ColumnSet",
+                "columns": [{
+                    "type": "Column",
+                    "items": [{
+                        "type": "Image",
+                        "horizontalAlignment": "Left",
+                        "style": "Person",
+                        "url": "https://www2.pic-upload.de/img/36024623/FestinoSupporterBot.png",
+                        "size": "Large"
+                    }],
+                    "width": "auto"
+                }, {
+                    "type": "Column",
+                    "items": [{
+                        "type": "TextBlock",
+                        "weight": "Bolder",
+                        "text": "Hi, my name is Festino.",
+                        "wrap": true
+                    }, {
+                        "type": "TextBlock",
+                        "text": "I'm here to help you with SharePoint and Teams.",
+                        "isSubtle": true,
+                        "wrap": true
+                    }, {
+                        "type": "TextBlock",
+                        "text": "You can choose the platform you need information for.",
+                        "wrap": true
+                    }, {
+                        "wrap": true,
+                        "type": "TextBlock",
+                        "spacing": "none",
+                        "text": "If you have a questions to another platform please type 'cancel' to leave the current context."
+                    }],
+                    "width": "stretch"
+                }]
+            }]
+        }]
+    }
+};
+
 var firstDialog = true;
 var knowledgeBaseIDs = {
     sharePoint: "e612834d-f8a4-498a-80d0-373f48f60264",
@@ -77,7 +124,7 @@ bot.dialog("/", [(session) =>
         {listStyle: builder.ListStyle.button});
 }, (session, result) =>
 {
-    session.beginDialog("CategorySelection", {category:result.response.entity});
+    session.beginDialog("CategorySelection", {category: result.response.entity});
 }]);
 
 bot.dialog("Goodbye", (session) =>
@@ -141,7 +188,11 @@ bot.dialog("Cancel", [(session) =>
 
 bot.dialog("Help", [(session) =>
 {
-    session.send("This is the help dialog");
+    firstDialog = false;
+    var helpMsg = new builder.Message(session);
+    helpMsg.addAttachment(card);
+    session.send(helpMsg);
+    session.replaceDialog("/");
 }])
 .triggerAction({
     matches: /^help$/i
