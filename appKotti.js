@@ -37,6 +37,14 @@ server.post('/api/messages', connector.listen());
     }
 });*/
 
+var luisAppId = "5dbd3446-a86c-4819-b48b-d5f17e91b87e";
+var luisAPIKey = "6a71133fa1964f1b90fed95d8a7aa0e6";
+var luisAPIHostName = 'westeurope.api.cognitive.microsoft.com';
+
+var luisURL = 'https://' + luisAPIHostName + '/luis/v2.0/apps/' + luisAppId + '?subscription-key=' + luisAPIKey;
+
+var luisRecognizer = new builder.LuisRecognizer(luisURL);
+
 var teamsRecognizer = new builder_cognitiveservices.QnAMakerRecognizer({
     knowledgeBaseId: knowledgeBaseIDs.teams,
     authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9",
@@ -65,9 +73,10 @@ var sharePointBasicQnAMakerDialog = new builder_cognitiveservices.QnAMakerDialog
     feedbackLib: qnaMakerTools
 });
 
-bot.dialog('sharePointBasicQnAMakerDialog', sharePointBasicQnAMakerDialog);
-bot.dialog('teamsBasicQnAMakerDialog', teamsBasicQnAMakerDialog);
+/*bot.dialog('sharePointBasicQnAMakerDialog', sharePointBasicQnAMakerDialog);
+bot.dialog('teamsBasicQnAMakerDialog', teamsBasicQnAMakerDialog);*/
 
+/*
 bot.dialog("/", [(session) =>
 {
     if(firstDialog)
@@ -81,7 +90,20 @@ bot.dialog("/", [(session) =>
 {
     session.beginDialog("CategorySelection", {category:result.response.entity});
 }]);
+*/
 
+var intents = new builder.IntentDialog({recognizers: [luisRecognizer, teamsRecognizer, sharePointRecognizer]});
+
+bot.dialog("/", intents);
+
+intents.matches("Goodbye", builder.DialogAction.send("LUIS Goodbye Intent"));
+
+intents.onDefault([(session) =>
+{
+    session.send("Sorry! No match!");
+}]);
+
+/*
 bot.dialog("CategorySelection", [(session, args) =>
 {
     firstDialog = false;
@@ -140,4 +162,4 @@ bot.dialog("Help", [(session) =>
 }])
 .triggerAction({
     matches: /^help$/i
-});
+});*/
