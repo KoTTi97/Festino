@@ -3,7 +3,6 @@ var builder = require('botbuilder');
 var builder_cognitiveservices = require("botbuilder-cognitiveservices");
 
 var firstDialog = true;
-
 var knowledgeBaseIDs = {
     sharePoint: "e612834d-f8a4-498a-80d0-373f48f60264",
     teams: "4d5edd0f-13c6-4af9-ab9c-d5167858a492"
@@ -19,7 +18,6 @@ var connector = new builder.ChatConnector({
     appPassword: process.env.MicrosoftAppPassword,
     openIdMetadata: process.env.BotOpenIdMetadata
 });
-
 var bot = new builder.UniversalBot(connector);
 
 var qnaMakerTools = new builder_cognitiveservices.QnAMakerTools();
@@ -37,35 +35,25 @@ server.post('/api/messages', connector.listen());
     }
 });*/
 
-var luisAppId = "5dbd3446-a86c-4819-b48b-d5f17e91b87e";
-var luisAPIKey = "6a71133fa1964f1b90fed95d8a7aa0e6";
-var luisAPIHostName = 'westeurope.api.cognitive.microsoft.com';
-
-var luisURL = 'https://' + luisAPIHostName + '/luis/v2.0/apps/' + luisAppId + '?subscription-key=' + luisAPIKey;
-
-var luisRecognizer = new builder.LuisRecognizer(luisURL);
-
+var luisRecognizer = new builder.LuisRecognizer("https://westeurope.api.cognitive.microsoft.com/luis/v2.0/apps/5dbd3446-a86c-4819-b48b-d5f17e91b87e?subscription-key=6a71133fa1964f1b90fed95d8a7aa0e6&timezoneOffset=60&q=");
 var teamsRecognizer = new builder_cognitiveservices.QnAMakerRecognizer({
     knowledgeBaseId: knowledgeBaseIDs.teams,
     authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9",
     endpointHostName: "https://festinoqna.azurewebsites.net/qnamaker",
     top: 3
 });
-
 var teamsBasicQnAMakerDialog = new builder_cognitiveservices.QnAMakerDialog({
     recognizers: [teamsRecognizer],
     defaultMessage: 'No match! Try changing the query terms!',
     qnaThreshold: 0.7,
     feedbackLib: qnaMakerTools
 });
-
 var sharePointRecognizer = new builder_cognitiveservices.QnAMakerRecognizer({
     knowledgeBaseId: knowledgeBaseIDs.sharePoint,
     authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9",
     endpointHostName: "https://festinoqna.azurewebsites.net/qnamaker",
     top: 3
 });
-
 var sharePointBasicQnAMakerDialog = new builder_cognitiveservices.QnAMakerDialog({
     recognizers: [sharePointRecognizer],
     defaultMessage: 'No match! Try changing the query terms!',
@@ -73,10 +61,11 @@ var sharePointBasicQnAMakerDialog = new builder_cognitiveservices.QnAMakerDialog
     feedbackLib: qnaMakerTools
 });
 
-/*bot.dialog('sharePointBasicQnAMakerDialog', sharePointBasicQnAMakerDialog);
-bot.dialog('teamsBasicQnAMakerDialog', teamsBasicQnAMakerDialog);*/
+bot.dialog('sharePointBasicQnAMakerDialog', sharePointBasicQnAMakerDialog);
+bot.dialog('teamsBasicQnAMakerDialog', teamsBasicQnAMakerDialog);
 
-/*
+bot.recognizer(luisRecognizer);
+
 bot.dialog("/", [(session) =>
 {
     if(firstDialog)
@@ -90,20 +79,14 @@ bot.dialog("/", [(session) =>
 {
     session.beginDialog("CategorySelection", {category:result.response.entity});
 }]);
-*/
 
-var intents = new builder.IntentDialog({recognizers: [luisRecognizer, teamsRecognizer, sharePointRecognizer]});
-
-bot.dialog("/", intents);
-
-intents.matches("Goodbye", builder.DialogAction.send("LUIS Goodbye Intent"));
-
-intents.onDefault([(session) =>
+bot.dialog("Goodbye", (session) =>
 {
-    session.send("Sorry! No match!");
-}]);
+    session.send("luis goodbye");
+}).triggerAction({
+    matches: "Goodbye"
+});
 
-/*
 bot.dialog("CategorySelection", [(session, args) =>
 {
     firstDialog = false;
@@ -162,4 +145,4 @@ bot.dialog("Help", [(session) =>
 }])
 .triggerAction({
     matches: /^help$/i
-});*/
+});
