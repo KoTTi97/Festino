@@ -1,112 +1,199 @@
-/*-----------------------------------------------------------------------------
-A simple echo bot for the Microsoft Bot Framework. 
------------------------------------------------------------------------------*/
-
-var teamsKB = {
-    knowledgeBaseId: "4d5edd0f-13c6-4af9-ab9c-d5167858a492",
-    authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9", // Backward compatibility with QnAMaker (Preview)
-    endpointHostName: "https://festinoqna.azurewebsites.net/qnamaker"
-};
-var sharePointKB = {
-    knowledgeBaseId: "e612834d-f8a4-498a-80d0-373f48f60264",
-    authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9", // Backward compatibility with QnAMaker (Preview)
-    endpointHostName: "https://festinoqna.azurewebsites.net/qnamaker"
-};
-
 var restify = require('restify');
 var builder = require('botbuilder');
-var botbuilder_azure = require("botbuilder-azure");
 var builder_cognitiveservices = require("botbuilder-cognitiveservices");
 
-// Setup Restify Server
+var card = {
+    "contentType": "application/vnd.microsoft.card.adaptive",
+    "content": {
+        "type": "AdaptiveCard",
+        "body": [{
+            "type": "Container",
+            "items": [{"type": "TextBlock", "size": "Large", "weight": "Bolder", "text": "Help"}, {
+                "type": "ColumnSet",
+                "columns": [{
+                    "type": "Column",
+                    "items": [{
+                        "type": "Image",
+                        "horizontalAlignment": "Left",
+                        "style": "Person",
+                        "url": "https://www2.pic-upload.de/img/36024623/FestinoSupporterBot.png",
+                        "size": "Large"
+                    }],
+                    "width": "auto"
+                }, {
+                    "type": "Column",
+                    "items": [{
+                        "type": "TextBlock",
+                        "weight": "Bolder",
+                        "text": "Hi, my name is Festino.",
+                        "wrap": true
+                    }, {
+                        "type": "TextBlock",
+                        "text": "I'm here to help you with SharePoint and Teams.",
+                        "isSubtle": true,
+                        "wrap": true
+                    }, {
+                        "type": "TextBlock",
+                        "text": "You can choose the platform you need information for.",
+                        "wrap": true
+                    }, {
+                        "wrap": true,
+                        "type": "TextBlock",
+                        "spacing": "none",
+                        "text": "If you have a questions to another platform please type 'cancel' to leave the current context."
+                    }],
+                    "width": "stretch"
+                }]
+            }]
+        }]
+    }
+};
+
+var firstDialog = true;
+var knowledgeBaseIDs = {
+    sharePoint: "e612834d-f8a4-498a-80d0-373f48f60264",
+    teams: "4d5edd0f-13c6-4af9-ab9c-d5167858a492"
+};
+
 var server = restify.createServer();
-server.listen(process.env.port || process.env.PORT || 3978, function () {
-   console.log('%s listening to %s', server.name, server.url); 
+server.listen(3978, function () {
+    console.log('%s listening to %s', server.name, server.url);
 });
-  
-// Create chat connector for communicating with the Bot Framework Service
+
 var connector = new builder.ChatConnector({
     appId: process.env.MicrosoftAppId,
     appPassword: process.env.MicrosoftAppPassword,
-    openIdMetadata: process.env.BotOpenIdMetadata 
+    openIdMetadata: process.env.BotOpenIdMetadata
 });
+var bot = new builder.UniversalBot(connector);
 
-// Listen for messages from users 
+var qnaMakerTools = new builder_cognitiveservices.QnAMakerTools();
+bot.library(qnaMakerTools.createLibrary());
+
 server.post('/api/messages', connector.listen());
 
-/*----------------------------------------------------------------------------------------
-* Bot Storage: This is a great spot to register the private state storage for your bot. 
-* We provide adapters for Azure Table, CosmosDb, SQL Azure, or you can implement your own!
-* For samples and documentation, see: https://github.com/Microsoft/BotBuilder-Azure
-* ---------------------------------------------------------------------------------------- */
-
-/*var tableName = 'botdata';
-var azureTableClient = new botbuilder_azure.AzureTableClient(tableName, process.env['AzureWebJobsStorage']);
-var tableStorage = new botbuilder_azure.AzureBotStorage({ gzipData: false }, azureTableClient);*/
-
-// Create your bot with a function to receive messages from the user
-var bot = new builder.UniversalBot(connector);
-//bot.set('storage', tableStorage);
-bot.on('conversationUpdate', function (message) {
-    if (message.membersAdded) {
-        message.membersAdded.forEach(function (identity) {
-            if (identity.id === message.address.bot.id) {
-                bot.send(new builder.Message()
-                    .address(message.address)
-                    .text("Hello!  I'm Festino how can i help you?"));
-            }
-        });
+/*bot.on("conversationUpdate", (message) =>
+{
+    if (message.membersAdded[0].id === message.address.bot.id) {
+        var reply = new builder.Message()
+            .address(message.address)
+            .text("Hi, my name is Festino! How can i help you?");
+        bot.send(reply);
     }
+});*/
+
+var luisRecognizer = new builder.LuisRecognizer("https://westeurope.api.cognitive.microsoft.com/luis/v2.0/apps/5dbd3446-a86c-4819-b48b-d5f17e91b87e?subscription-key=6a71133fa1964f1b90fed95d8a7aa0e6&timezoneOffset=60&q=");
+var teamsRecognizer = new builder_cognitiveservices.QnAMakerRecognizer({
+    knowledgeBaseId: knowledgeBaseIDs.teams,
+    authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9",
+    endpointHostName: "https://festinoqna.azurewebsites.net/qnamaker",
+    top: 3
 });
-
-// Recognizer and and Dialog for preview QnAMaker service
-var previewRecognizer = new builder_cognitiveservices.QnAMakerRecognizer({
-    knowledgeBaseId: "4d5edd0f-13c6-4af9-ab9c-d5167858a492",
-    authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9"
-});
-
-
-
-var basicQnAMakerPreviewDialog = new builder_cognitiveservices.QnAMakerDialog({
-    recognizers: [previewRecognizer],
+var teamsBasicQnAMakerDialog = new builder_cognitiveservices.QnAMakerDialog({
+    recognizers: [teamsRecognizer],
     defaultMessage: 'No match! Try changing the query terms!',
-    qnaThreshold: 0.3
+    qnaThreshold: 0.7,
+    feedbackLib: qnaMakerTools
 });
-
-bot.dialog('basicQnAMakerPreviewDialog', basicQnAMakerPreviewDialog);
-
-// Recognizer and and Dialog for GA QnAMaker service
-var recognizer = new builder_cognitiveservices.QnAMakerRecognizer({
-    knowledgeBaseId: "4d5edd0f-13c6-4af9-ab9c-d5167858a492",
-    authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9", // Backward compatibility with QnAMaker (Preview)
-    endpointHostName: "https://festinoqna.azurewebsites.net/qnamaker"
+var sharePointRecognizer = new builder_cognitiveservices.QnAMakerRecognizer({
+    knowledgeBaseId: knowledgeBaseIDs.sharePoint,
+    authKey: "d219649a-bd62-44b6-9baf-3df5c9024da9",
+    endpointHostName: "https://festinoqna.azurewebsites.net/qnamaker",
+    top: 3
 });
-
-var basicQnAMakerDialog = new builder_cognitiveservices.QnAMakerDialog({
-    recognizers: [recognizer],
+var sharePointBasicQnAMakerDialog = new builder_cognitiveservices.QnAMakerDialog({
+    recognizers: [sharePointRecognizer],
     defaultMessage: 'No match! Try changing the query terms!',
-    qnaThreshold: 0.3
+    qnaThreshold: 0.7,
+    feedbackLib: qnaMakerTools
 });
 
-bot.dialog('basicQnAMakerDialog', basicQnAMakerDialog);
+bot.dialog('sharePointBasicQnAMakerDialog', sharePointBasicQnAMakerDialog);
+bot.dialog('teamsBasicQnAMakerDialog', teamsBasicQnAMakerDialog);
 
-bot.dialog('/', //basicQnAMakerDialog);
-    [
-        function (session) {
-            var qnaKnowledgebaseId = "4d5edd0f-13c6-4af9-ab9c-d5167858a492";
-            var qnaAuthKey = "d219649a-bd62-44b6-9baf-3df5c9024da9";
-            var endpointHostName = "https://festinoqna.azurewebsites.net/qnamaker";
+bot.recognizer(luisRecognizer);
 
-            // QnA Subscription Key and KnowledgeBase Id null verification
-            if ((qnaAuthKey == null || qnaAuthKey === '') || (qnaKnowledgebaseId == null || qnaKnowledgebaseId === ''))
-                session.send('Please set QnAKnowledgebaseId, QnAAuthKey and QnAEndpointHostName (if applicable) in App Settings. Learn how to get them at https://aka.ms/qnaabssetup.');
-            else {
-                if (endpointHostName == null || endpointHostName === '')
-                    // Replace with Preview QnAMakerDialog service
-                    session.replaceDialog('basicQnAMakerPreviewDialog');
-                else
-                    // Replace with GA QnAMakerDialog service
-                    session.replaceDialog('basicQnAMakerDialog');
-            }
-        }
-    ]);
+bot.dialog("/", [(session) =>
+{
+    if(firstDialog)
+    {
+        session.send("Hi, my name is Festino!");
+    }
+    builder.Prompts.choice(session, firstDialog ? "Which platform do you need help for?" :
+        "Can I help you with you with something else?", "SharePoint|Teams",
+        {listStyle: builder.ListStyle.button});
+}, (session, result) =>
+{
+    session.beginDialog("CategorySelection", {category: result.response.entity});
+}]);
+
+bot.dialog("Goodbye", (session) =>
+{
+    session.send("luis goodbye");
+}).triggerAction({
+    matches: "Goodbye"
+});
+
+bot.dialog("CategorySelection", [(session, args) =>
+{
+    firstDialog = false;
+
+    if(args.category === "SharePoint")
+    {
+        session.beginDialog("SharePointMain");
+    }
+    else if(args.category === "Teams")
+    {
+        session.beginDialog("TeamsMain");
+    }
+}, (session, result) =>
+{
+    session.replaceDialog("CategorySelection", {category: result.category});
+}]);
+
+bot.dialog("SharePointMain", [(session) =>
+{
+    builder.Prompts.text(session, "What do you want to know about SharePoint?");
+}, (session, results) =>
+{
+    session.beginDialog('sharePointBasicQnAMakerDialog');
+}, (session, result) =>
+{
+    session.endDialogWithResult({category: "SharePoint"})
+}]);
+
+bot.dialog("TeamsMain", [(session) =>
+{
+    builder.Prompts.text(session, "What do you want to know about Teams?");
+}, (session, results) =>
+{
+    session.beginDialog('teamsBasicQnAMakerDialog');
+}, (session, result) =>
+{
+    session.endDialogWithResult({category: "Teams"})
+}]);
+
+
+
+
+
+bot.dialog("Cancel", [(session) =>
+{
+    session.send("You now leave this context");
+    session.replaceDialog("/");
+}])
+.triggerAction({
+    matches: /^cancel$/i
+});
+
+bot.dialog("Help", [(session) =>
+{
+    firstDialog = false;
+    var helpMsg = new builder.Message(session);
+    helpMsg.addAttachment(card);
+    session.send(helpMsg);
+    session.replaceDialog("/");
+}])
+.triggerAction({
+    matches: /^help$/i
+});

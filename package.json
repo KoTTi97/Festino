@@ -2,7 +2,7 @@
   "name": "QnABot",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "app._Backup.js",
   "scripts": {
     "start": "nodemon app.js",
     "start2": "nodemon app2.js",
